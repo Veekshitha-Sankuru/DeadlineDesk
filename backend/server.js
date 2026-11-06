@@ -25,14 +25,28 @@ const app = express();
 
 // ── Middleware ──────────────────────────────────────────────────────────────
 
-// Allow requests from the React frontend
+// Allow requests from the React frontend.
+// Accepts localhost (dev), any *.vercel.app preview URL, and the
+// explicit FRONTEND_URL env var set on Render for the production domain.
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL || "http://localhost:5173",
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      // Allow any Vercel preview/production domain
+      if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+      // Allow explicitly listed origins
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error("CORS: origin not allowed — " + origin));
+    },
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
