@@ -5,7 +5,7 @@ import {
   Clock,
   CheckCircle2,
   BookOpen,
-  X,
+  Home,
 } from "lucide-react";
 
 /**
@@ -39,8 +39,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <p className="nav-section-label">Menu</p>
 
           <NavLink
-            to="/"
-            end
+            to="/dashboard"
             className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
             onClick={onClose}
           >
@@ -73,6 +72,17 @@ const Sidebar = ({ isOpen, onClose }) => {
           >
             <CheckCircle2 size={16} />
             Completed
+          </NavLink>
+
+          <p className="nav-section-label" style={{ marginTop: "20px" }}>Other</p>
+
+          <NavLink
+            to="/"
+            className="nav-link"
+            onClick={onClose}
+          >
+            <Home size={16} />
+            Landing Page
           </NavLink>
         </nav>
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
+import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Assignments from "./pages/Assignments";
 import PendingAssignments from "./pages/PendingAssignments";
@@ -12,7 +13,8 @@ import AssignmentForm from "./pages/AssignmentForm";
  * Sets up the sidebar + main content shell, and defines all page routes.
  *
  * Routes:
- *   /                     → Dashboard
+ *   /                     → Landing Page (public)
+ *   /dashboard            → Dashboard
  *   /assignments          → All Assignments
  *   /assignments/new      → Add Assignment Form
  *   /assignments/edit/:id → Edit Assignment Form
@@ -22,9 +24,21 @@ import AssignmentForm from "./pages/AssignmentForm";
 const App = () => {
   // Controls sidebar visibility on mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   const openSidebar = () => setSidebarOpen(true);
   const closeSidebar = () => setSidebarOpen(false);
+
+  // Landing page gets its own full-screen layout (no sidebar)
+  const isLanding = location.pathname === "/";
+
+  if (isLanding) {
+    return (
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+      </Routes>
+    );
+  }
 
   return (
     <div className="app-shell">
@@ -35,7 +49,7 @@ const App = () => {
       <main className="main-content">
         <Routes>
           <Route
-            path="/"
+            path="/dashboard"
             element={<Dashboard onMenuToggle={openSidebar} />}
           />
           <Route
